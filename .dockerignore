@@ -1,0 +1,10 @@
+﻿# 排除不需要进镜像的文件
+.git
+.gitignore
+README.md
+LICENSE
+docker-compose.yml
+dep-tree.txt
+pkglist-*.txt
+packages/arm64/
+packages/amd64/

@@ -1,0 +1,14 @@
+﻿version: "3.9"
+
+services:
+  auto-print:
+    build: .
+    image: rebecaachambers/auto-print:latest
+    network_mode: host          # mDNS 广播需要 host 网络
+    privileged: true            # 访问 USB 设备需要
+    restart: unless-stopped
+    volumes:
+      - /dev/usb:/dev/usb       # USB 打印机设备
+      - /dev/bus/usb:/dev/bus/usb
+    environment:
+      - TZ=Asia/Shanghai
