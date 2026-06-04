@@ -1,0 +1,6 @@
+﻿# Auto Printer Server .gitignore
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
