@@ -17,7 +17,7 @@
 ### ⚠️ 安装前必读
 
 > **重要警告**：
-> 1. `packages/` 目录下的 212 个离线 `.deb` 包是从 **Armbian (Ubuntu 22.04, aarch64)** 系统下载的，仅适用于相同系统版本
+> 1. `packages/` 目录下的离线 `.deb` 包是从 **Armbian (Ubuntu 22.04, aarch64)** 系统下载的，仅适用于相同系统版本
 > 2. 在安装前，请确认你的系统与上述表格匹配
 > 3. 如果系统不匹配，请不要使用离线安装，改用在线安装（脚本会自动检测 `packages/` 目录是否存在）
 > 4. 在线安装不依赖 `packages/` 目录，脚本会通过 `apt-get` 自动适配当前系统版本
@@ -37,7 +37,7 @@ auto-print/
 
 ## 安装
 
-在 N1（Armbian）上执行：
+在（Armbian）上执行：
 
 ```bash
 chmod +x install.sh && ./install.sh
