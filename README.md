@@ -2,14 +2,6 @@
 
 将老旧 USB 打印机变成支持 AirPrint 的网络打印机，照片打印自动页面居中。
 
-## 架构
-
-```
-iPhone ──AirPrint──> CUPS (Armbian N1) ──USB──> 打印机
-                          │
-               [imagetoraster wrapper]
-                   JPEG → PDF → 居中 → 光栅
-```
 
 ## 支持的操作系统
 
