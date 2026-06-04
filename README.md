@@ -2,33 +2,31 @@
 
 将老旧 USB 打印机变成支持 AirPrint 的网络打印机，照片打印自动页面居中。
 
+## 支持的操作系统与架构
 
-## 支持的操作系统
+本项目专为 **Ubuntu 22.04 Jammy** 系统构建，支持以下架构：
 
-本项目专为 **Armbian (Ubuntu 22.04 Jammy, aarch64/arm64)** 系统构建。
-
-| 系统 | 架构 | 状态 |
-|------|------|------|
-| Armbian (Ubuntu 22.04) | arm64 (aarch64) | ✅ 已验证 |
-| Armbian (Debian 系) | arm64 | ⚠️ 可能兼容，需自行测试 |
-| 其他 ARM64 Linux 发行版 | arm64 | ❌ 不保证兼容 |
-| x86_64 系统 | amd64 | ❌ 不兼容 |
+| 架构 | 离线包目录 | 状态 |
+|------|-----------|------|
+| ARM64 (aarch64) | `packages/arm64/` | ✅ 已验证（N1 盒子） |
+| AMD64 (x86_64) | `packages/amd64/` | ✅ 已验证 |
 
 ### ⚠️ 安装前必读
 
 > **重要警告**：
-> 1. `packages/` 目录下的离线 `.deb` 包是从 **Armbian (Ubuntu 22.04, aarch64)** 系统下载的，仅适用于相同系统版本
-> 2. 在安装前，请确认你的系统与上述表格匹配
-> 3. 如果系统不匹配，请不要使用离线安装，改用在线安装（脚本会自动检测 `packages/` 目录是否存在）
-> 4. 在线安装不依赖 `packages/` 目录，脚本会通过 `apt-get` 自动适配当前系统版本
+> 1. 离线包目录下共 **91 个 `.deb` 包**，从 **Ubuntu 22.04 Jammy** 系统下载，仅适用于相同系统版本
+> 2. `install.sh` 会自动检测系统架构，选择对应的 `packages/arm64/` 或 `packages/amd64/` 目录安装
+> 3. 如果系统不匹配或在线安装模式，脚本会回退到 `apt-get` 在线安装（无需离线包）
 
 ## 文件结构
 
 ```
 auto-print/
-├── install.sh                   # 一键安装（离线/在线双模式）
+├── install.sh                   # 一键安装（自动检测架构）
 ├── README.md
-├── packages/                    # 离线 .deb 依赖包（Armbian Ubuntu 22.04 arm64）
+├── packages/
+│   ├── arm64/                   # ARM64 离线 .deb 包
+│   └── amd64/                   # AMD64 离线 .deb 包
 └── scripts/
     ├── center-filter.py         # PDF 居中过滤器
     ├── imagetoraster-wrapper.py # AirPrint 照片居中包装器
@@ -37,15 +35,16 @@ auto-print/
 
 ## 安装
 
-在（Armbian）上执行：
+在目标机器上执行：
 
 ```bash
 chmod +x install.sh && ./install.sh
 ```
 
-安装脚本会自动检测：
-- 如果 `packages/` 目录存在 → 使用本地离线包安装（**需系统版本匹配**）
-- 如果 `packages/` 目录不存在 → 自动通过 `apt-get` 在线安装（推荐用于非标准系统）
+安装脚本会自动：
+1. 检测系统架构（arm64 / amd64）
+2. 选择对应的离线包目录安装，无需网络
+3. 如果离线包不匹配，自动回退到 `apt-get` 在线安装
 
 ### 添加打印机
 

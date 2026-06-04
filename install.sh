@@ -1,23 +1,33 @@
 ﻿#!/bin/bash
 # Auto Printer Server - Install Script
-# Supports both online (apt-get) and offline (local .deb packages) installation
+# Supports arm64 and amd64 offline installation
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 echo "=== Installing Auto Printer Server ==="
 
-# 1. Install dependencies (offline if packages/ present)
-if [ -d "$SCRIPT_DIR/packages" ] && [ "$(ls $SCRIPT_DIR/packages/*.deb 2>/dev/null | wc -l)" -gt 0 ]; then
-    echo ">>> Installing from local packages/ directory..."
-    dpkg -i --no-debsig "$SCRIPT_DIR/packages"/*.deb 2>/dev/null || true
-    # Fix any remaining dependency issues without downloading
+# Detect architecture
+ARCH=$(dpkg --print-architecture 2>/dev/null || uname -m)
+echo ">>> Detected architecture: $ARCH"
+
+# Map architecture to package directory
+case "$ARCH" in
+    aarch64|arm64)   PKG_DIR="$SCRIPT_DIR/packages/arm64" ;;
+    x86_64|amd64)    PKG_DIR="$SCRIPT_DIR/packages/amd64" ;;
+    *)               PKG_DIR="" ;;
+esac
+
+# 1. Install dependencies
+if [ -n "$PKG_DIR" ] && [ -d "$PKG_DIR" ] && [ "$(ls $PKG_DIR/*.deb 2>/dev/null | wc -l)" -gt 0 ]; then
+    echo ">>> Installing from $PKG_DIR ($(ls $PKG_DIR/*.deb | wc -l) packages)..."
+    dpkg -i --no-debsig "$PKG_DIR"/*.deb 2>/dev/null || true
     apt --fix-broken install --no-download -y 2>/dev/null || true
 else
-    echo ">>> Installing via apt-get (online)..."
+    echo ">>> No offline packages found for $ARCH, installing via apt-get..."
     apt-get update -qq
-    apt-get install -y -qq cups cups-filters brlaser printer-driver-brlaser \
-        poppler-utils ghostscript python3 avahi-daemon 2>/dev/null
+    apt-get install -y -qq cups cups-filters avahi-daemon \
+        poppler-utils ghostscript printer-driver-brlaser python3 2>/dev/null
 fi
 
 # 2. Install center-filter.py
